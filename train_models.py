@@ -13,7 +13,7 @@ from metrics import evaluate_model
 import pprint
 
 def train_logistic_regression(X_train, X_test, y_train, y_test, dump_path="models/Logistic_Regression.pkl"):
-    model = LogisticRegression(max_iter=2000)
+    model = LogisticRegression(max_iter=2000, C=10, penalty="l1", solver="saga")
     model.fit(X_train, y_train)
     result = evaluate_model(model, X_test, y_test)
     return model, result
