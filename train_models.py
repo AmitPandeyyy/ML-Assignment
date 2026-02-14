@@ -10,6 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestClassifier
 
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
@@ -39,6 +40,12 @@ def train_naive_bayes(X_train, X_test, y_train, y_test):
         ("pca", PCA(n_components=0.95)),  # keep 95% variance
         ("nb", GaussianNB())
     ])
+    model.fit(X_train, y_train)
+    result = evaluate_model(model, X_test, y_test)
+    return model, result
+
+def train_random_forest(X_train, X_test, y_train, y_test):
+    model = RandomForestClassifier(n_estimators=300, max_depth=15, min_samples_leaf=1)
     model.fit(X_train, y_train)
     result = evaluate_model(model, X_test, y_test)
     return model, result
@@ -77,4 +84,12 @@ if __name__ == "__main__":
         "label_encoder": le
     }, "models/Naive_Bayes.pkl")
     print("Naive Bayes:")
+    pprint.pprint(result, indent=4)
+
+    model, result = train_random_forest(X_train, X_test, y_train, y_test)
+    joblib.dump({
+        "model": model,
+        "label_encoder": le
+    }, "models/Random_Forest.pkl")
+    print("Random Forest:")
     pprint.pprint(result, indent=4)

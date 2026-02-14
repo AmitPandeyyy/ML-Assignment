@@ -17,6 +17,7 @@ MODEL_FILES = {
     "Decision Tree": "models/Decision_Tree.pkl",
     "k Nearest Neighbors": "models/kNN.pkl",
     "Naive Bayes": "models/Naive_Bayes.pkl",
+    "Random Forest": "models/Random_Forest.pkl",
 }
 
 model_name = st.sidebar.selectbox("Choose Model", list(MODEL_FILES.keys()))
