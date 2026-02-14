@@ -19,7 +19,7 @@ def train_logistic_regression(X_train, X_test, y_train, y_test, dump_path="model
     return model, result
 
 def train_decision_tree(X_train, X_test, y_train, y_test, dump_path="models/Decision_Tree.pkl"):
-    model = DecisionTreeClassifier()
+    model = DecisionTreeClassifier(criterion='entropy',ccp_alpha=0.00039154001198452845)
     model.fit(X_train, y_train)
     result = evaluate_model(model, X_test, y_test)
     return model, result
