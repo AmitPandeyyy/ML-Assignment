@@ -5,6 +5,7 @@ Train models and save them.
 
 import joblib
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
@@ -18,6 +19,12 @@ def train_logistic_regression(X_train, X_test, y_train, y_test, dump_path="model
     result = evaluate_model(model, X_test, y_test)
     return model, result
 
+def train_decision_tree(X_train, X_test, y_train, y_test, dump_path="models/Decision_Tree.pkl"):
+    model = DecisionTreeClassifier()
+    model.fit(X_train, y_train)
+    joblib.dump(model, dump_path)
+    result = evaluate_model(model, X_test, y_test)
+    return model, result
 
 if __name__ == "__main__":
     csv_path = "data/obesity.csv"
@@ -25,4 +32,8 @@ if __name__ == "__main__":
 
     model, result = train_logistic_regression(X_train, X_test, y_train, y_test)
     print("Logistic Regression:")
+    pprint.pprint(result, indent=4)
+
+    model, result = train_decision_tree(X_train, X_test, y_train, y_test)
+    print("Decision Tree:")
     pprint.pprint(result, indent=4)
