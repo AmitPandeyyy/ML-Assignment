@@ -14,7 +14,8 @@ st.sidebar.header("Model Selection")
 
 MODEL_FILES = {
     "Logistic Regression": "models/Logistic_Regression.pkl",
-    "Decision Tree": "models/Decision_Tree.pkl"
+    "Decision Tree": "models/Decision_Tree.pkl",
+    "k Nearest Neighbors": "models/kNN.pkl"
 }
 
 model_name = st.sidebar.selectbox("Choose Model", list(MODEL_FILES.keys()))
