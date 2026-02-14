@@ -11,6 +11,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+import pandas as pd
 
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
@@ -50,11 +52,26 @@ def train_random_forest(X_train, X_test, y_train, y_test):
     result = evaluate_model(model, X_test, y_test)
     return model, result
 
+def train_xgboost(X_train, X_test, y_train, y_test):
+    model = XGBClassifier(
+        objective="multi:softprob",
+        eval_metric="mlogloss",
+        num_class=7
+    )
+    model.fit(X_train, y_train)
+    result = evaluate_model(model, X_test, y_test)
+    return model, result
+
+
 if __name__ == "__main__":
     csv_path = "data/obesity.csv"
     X_train, X_test, y_train, y_test, _, le = load_and_preprocess(csv_path)
 
+    # collecting results for summary table
+    results_summary = {}
+
     model, result = train_logistic_regression(X_train, X_test, y_train, y_test)
+    results_summary["Logistic Regression"] = result
     joblib.dump({
         "model": model,
         "label_encoder": le
@@ -63,6 +80,7 @@ if __name__ == "__main__":
     pprint.pprint(result, indent=4)
 
     model, result = train_decision_tree(X_train, X_test, y_train, y_test)
+    results_summary["Decision Tree"] = result
     joblib.dump({
         "model": model,
         "label_encoder": le
@@ -71,6 +89,7 @@ if __name__ == "__main__":
     pprint.pprint(result, indent=4)
 
     model, result = train_knn(X_train, X_test, y_train, y_test)
+    results_summary["kNN"] = result
     joblib.dump({
         "model": model,
         "label_encoder": le
@@ -79,6 +98,7 @@ if __name__ == "__main__":
     pprint.pprint(result, indent=4)
 
     model, result = train_naive_bayes(X_train, X_test, y_train, y_test)
+    results_summary["Naive Bayes"] = result
     joblib.dump({
         "model": model,
         "label_encoder": le
@@ -87,9 +107,48 @@ if __name__ == "__main__":
     pprint.pprint(result, indent=4)
 
     model, result = train_random_forest(X_train, X_test, y_train, y_test)
+    results_summary["Random Forest"] = result
     joblib.dump({
         "model": model,
         "label_encoder": le
     }, "models/Random_Forest.pkl")
     print("Random Forest:")
     pprint.pprint(result, indent=4)
+
+    model, result = train_xgboost(X_train, X_test, y_train, y_test)
+    results_summary["XGBoost"] = result
+    joblib.dump({
+        "model": model,
+        "label_encoder": le
+    }, "models/XGBoost.pkl")
+    print("XGBoost:")
+    pprint.pprint(result, indent=4)
+
+    # Extract only numeric metrics (exclude confusion matrix)
+    rows = []
+    for model_name, metrics_dict in results_summary.items():
+        row = {
+            "Model": model_name,
+            "AUC": metrics_dict["AUC"],
+            "Accuracy": metrics_dict["Accuracy"],
+            "Precision": metrics_dict["Precision"],
+            "Recall": metrics_dict["Recall"],
+            "F1": metrics_dict["F1"],
+            "MCC": metrics_dict["MCC"],
+        }
+        rows.append(row)
+
+    df = pd.DataFrame(rows)
+
+    # Round values
+    df = df.round(4)
+
+    # Convert to markdown
+    markdown_table = df.to_markdown(index=False)
+
+    # Write to README_table.md
+    with open("README_table.md", "w") as f:
+        f.write("# Model Comparison Results\n\n")
+        f.write(markdown_table)
+
+    print("\nREADME_table.md updated successfully.")
