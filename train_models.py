@@ -15,25 +15,31 @@ import pprint
 def train_logistic_regression(X_train, X_test, y_train, y_test, dump_path="models/Logistic_Regression.pkl"):
     model = LogisticRegression(max_iter=2000)
     model.fit(X_train, y_train)
-    joblib.dump(model, dump_path)
     result = evaluate_model(model, X_test, y_test)
     return model, result
 
 def train_decision_tree(X_train, X_test, y_train, y_test, dump_path="models/Decision_Tree.pkl"):
     model = DecisionTreeClassifier()
     model.fit(X_train, y_train)
-    joblib.dump(model, dump_path)
     result = evaluate_model(model, X_test, y_test)
     return model, result
 
 if __name__ == "__main__":
     csv_path = "data/obesity.csv"
-    X_train, X_test, y_train, y_test, _, _ = load_and_preprocess(csv_path)
+    X_train, X_test, y_train, y_test, _, le = load_and_preprocess(csv_path)
 
     model, result = train_logistic_regression(X_train, X_test, y_train, y_test)
+    joblib.dump({
+        "model": model,
+        "label_encoder": le
+    }, "models/Logistic_Regression.pkl")
     print("Logistic Regression:")
     pprint.pprint(result, indent=4)
 
     model, result = train_decision_tree(X_train, X_test, y_train, y_test)
+    joblib.dump({
+        "model": model,
+        "label_encoder": le
+    }, "models/Decision_Tree.pkl")
     print("Decision Tree:")
     pprint.pprint(result, indent=4)
