@@ -7,6 +7,9 @@ import joblib
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
 
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
@@ -27,6 +30,15 @@ def train_decision_tree(X_train, X_test, y_train, y_test, dump_path="models/Deci
 
 def train_knn(X_train, X_test, y_train, y_test):
     model = KNeighborsClassifier(n_neighbors=6, p=1, weights="distance")
+    model.fit(X_train, y_train)
+    result = evaluate_model(model, X_test, y_test)
+    return model, result
+
+def train_naive_bayes(X_train, X_test, y_train, y_test):
+    model = Pipeline([
+        ("pca", PCA(n_components=0.95)),  # keep 95% variance
+        ("nb", GaussianNB())
+    ])
     model.fit(X_train, y_train)
     result = evaluate_model(model, X_test, y_test)
     return model, result
@@ -57,4 +69,12 @@ if __name__ == "__main__":
         "label_encoder": le
     }, "models/kNN.pkl")
     print("kNN:")
+    pprint.pprint(result, indent=4)
+
+    model, result = train_naive_bayes(X_train, X_test, y_train, y_test)
+    joblib.dump({
+        "model": model,
+        "label_encoder": le
+    }, "models/Naive_Bayes.pkl")
+    print("Naive Bayes:")
     pprint.pprint(result, indent=4)

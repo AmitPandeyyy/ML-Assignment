@@ -3,9 +3,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
 
-import pandas as pd
 import pprint
-import numpy as np
 
 csv_path = "data/obesity.csv"
 X_train, X_test, y_train, y_test, _, le = load_and_preprocess(csv_path)
