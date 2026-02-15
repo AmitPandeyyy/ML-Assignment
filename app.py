@@ -10,6 +10,39 @@ import seaborn as sns
 
 st.title("Multiclass Classification - Obesity Dataset")
 
+# DOWNLOAD A DATA SUBSET FOR UPLOADING
+DATA_PATH = "data/obesity.csv"
+
+@st.cache_data
+def load_full_dataset():
+    return pd.read_csv(DATA_PATH)
+
+df_full = load_full_dataset()
+
+st.sidebar.header("Download Dataset Subset")
+
+total_samples = len(df_full)
+
+n_samples = st.sidebar.number_input(
+    "Number of samples to download",
+    min_value=1,
+    max_value=total_samples,
+    value=min(50, total_samples),
+    step=1
+)
+
+if st.sidebar.button("Generate & Download Subset"):
+    df_subset = df_full.sample(n=n_samples, random_state=42)
+    csv = df_subset.to_csv(index=False).encode("utf-8")
+
+    st.sidebar.download_button(
+        label="Download Subset CSV",
+        data=csv,
+        file_name=f"obesity_subset_{n_samples}.csv",
+        mime="text/csv"
+    )
+
+# MODEL SELECTION AND EVALUATION
 st.sidebar.header("Model Selection")
 
 MODEL_FILES = {
