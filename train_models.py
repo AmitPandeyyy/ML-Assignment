@@ -13,6 +13,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 import pandas as pd
+import os
 
 from preprocess import load_and_preprocess
 from metrics import evaluate_model
@@ -65,7 +66,8 @@ def train_xgboost(X_train, X_test, y_train, y_test):
 
 if __name__ == "__main__":
     csv_path = "data/obesity.csv"
-    X_train, X_test, y_train, y_test, _, le = load_and_preprocess(csv_path)
+    os.makedirs("models", exist_ok=True)
+    X_train, X_test, y_train, y_test, preprocessor, le = load_and_preprocess(csv_path)
 
     # collecting results for summary table
     results_summary = {}
@@ -74,7 +76,8 @@ if __name__ == "__main__":
     results_summary["Logistic Regression"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/Logistic_Regression.pkl")
     print("Logistic Regression:")
     pprint.pprint(result, indent=4)
@@ -83,7 +86,8 @@ if __name__ == "__main__":
     results_summary["Decision Tree"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/Decision_Tree.pkl")
     print("Decision Tree:")
     pprint.pprint(result, indent=4)
@@ -92,7 +96,8 @@ if __name__ == "__main__":
     results_summary["kNN"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/kNN.pkl")
     print("kNN:")
     pprint.pprint(result, indent=4)
@@ -101,7 +106,8 @@ if __name__ == "__main__":
     results_summary["Naive Bayes"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/Naive_Bayes.pkl")
     print("Naive Bayes:")
     pprint.pprint(result, indent=4)
@@ -110,7 +116,8 @@ if __name__ == "__main__":
     results_summary["Random Forest"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/Random_Forest.pkl")
     print("Random Forest:")
     pprint.pprint(result, indent=4)
@@ -119,7 +126,8 @@ if __name__ == "__main__":
     results_summary["XGBoost"] = result
     joblib.dump({
         "model": model,
-        "label_encoder": le
+        "label_encoder": le,
+        "preprocessor": preprocessor
     }, "models/XGBoost.pkl")
     print("XGBoost:")
     pprint.pprint(result, indent=4)

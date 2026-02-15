@@ -24,6 +24,7 @@ MODEL_FILES = {
 model_name = st.sidebar.selectbox("Choose Model", list(MODEL_FILES.keys()))
 model = joblib.load(MODEL_FILES[model_name])
 le = model["label_encoder"]
+preprocessor = model["preprocessor"]
 model = model["model"]
 
 uploaded_file = st.file_uploader("Upload Test CSV", type=["csv"])
@@ -39,11 +40,19 @@ if uploaded_file:
     df = pd.read_csv(uploaded_file)
     # st.dataframe(df.head())
 
-    X_train, X_test, y_train, y_test, _, label_encoder = load_and_preprocess(
-        uploaded_file, df = df
-    )
+    # X_train, X_test, y_train, y_test, _, label_encoder = load_and_preprocess(
+    #     uploaded_file, df = df
+    # )
 
-    results = evaluate_model(model, X_test, y_test)
+    target_col = "NObeyesdad"
+    X = df.drop(columns=[target_col])
+    y = df[target_col]
+
+    X_processed = preprocessor.transform(X)
+    y_processed = le.transform(y)
+
+    # results = evaluate_model(model, X_test, y_test)
+    results = evaluate_model(model, X_processed, y_processed)
 
     st.subheader("Evaluation Metrics")
     selected_keys = ['Accuracy', 'AUC', 'Precision', 'Recall', 'F1', 'MCC']

@@ -23,11 +23,13 @@ def evaluate_model(model, X_test, y_test, average="weighted"):
     y_pred = model.predict(X_test)
 
     # For AUC, probability output is needed
+    auc = None
     if hasattr(model, "predict_proba"):
         y_prob = model.predict_proba(X_test)
-        auc = roc_auc_score(y_test, y_prob, multi_class="ovr")
-    else:
-        auc = None
+        try:
+            auc = roc_auc_score(y_test, y_prob, multi_class="ovr")
+        except:
+            auc = None
 
     return {
         "Accuracy": accuracy_score(y_test, y_pred),

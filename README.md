@@ -22,7 +22,7 @@ Total Samples = 2111
 - Additionaly, added PCA for Naive Bayes classifier to improve its accuracy
 - Train-test split - 80/20
 
-# Model Comp arison Results
+# Model Comparison Results
 
 | Model               |   Accuracy |     F1 |   Precision |   Recall |    MCC |    AUC |
 |:--------------------|-----------:|-------:|------------:|---------:|-------:|-------:|

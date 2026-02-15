@@ -77,6 +77,10 @@ def load_and_preprocess(csv_path, df=None):
         X, y_encoded, test_size=0.2, random_state=42, stratify=y_encoded
     )
 
+    # X_test_with_target = X_test.copy()
+    # X_test_with_target[target_col] = label_encoder.inverse_transform(y_test)
+    # X_test_with_target.to_csv("data/test_split.csv", index=False)
+
     # Fit & transform
     X_train_processed = preprocessor.fit_transform(X_train)
     X_test_processed = preprocessor.transform(X_test)
